@@ -1,10 +1,10 @@
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className='flex min-h-screen flex-col items-center justify-between p-24'>
+    <main className='space-x-2 p-4'>
       <Link href='/users/signup'>Signup</Link>
+      <Link href='/auth/login'>Login</Link>
     </main>
   );
 }
