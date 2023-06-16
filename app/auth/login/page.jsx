@@ -4,8 +4,10 @@ import Link from 'next/link';
 import InputField from '@/components/input';
 import { useState } from 'react';
 import AuthContext from '@/components/shared/auth-context';
+import { useRouter } from 'next/navigation';
 
 function Page() {
+  const router = useRouter();
   const [loginBody, setLoginBody] = useState({
     email: '',
     password: '',
@@ -19,6 +21,10 @@ function Page() {
 
   async function onSubmit() {
     await context.login(loginBody);
+  }
+
+  async function handleGoogleLogin() {
+    router.push(`${process.env.NEXT_PUBLIC_API_URL}/auth/google/login`);
   }
 
   const { email, password } = loginBody;
@@ -40,13 +46,22 @@ function Page() {
             placeholder='Password'
             handleChange={handleChange}
           />
-          <button
-            type='submit'
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-            onClick={onSubmit}
-          >
-            Login
-          </button>
+          <div className='flex justify-between'>
+            <button
+              type='submit'
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+              onClick={onSubmit}
+            >
+              Login
+            </button>
+            <button
+              type='submit'
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+              onClick={handleGoogleLogin}
+            >
+              GoogleLogin
+            </button>
+          </div>
         </div>
         <div className='text-grey-dark mt-6'>
           <Link
