@@ -5,22 +5,25 @@ import axios from '@/utils/api';
 
 const AuthContext = createContext();
 
+async function getUserProfile(setUser) {
+  const response = await axios.get('/auth/profile');
+  if (response.status === 200) {
+    localStorage.setItem('userProfile', JSON.stringify(response.data));
+    setUser(response.data);
+  }
+}
+
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
-  const fetchAndSetUser = useCallback(() => {
-    axios
-      .get('/auth/profile', {
-        withCredentials: true,
-      })
-      .then((response) => {
-        if (response.status === 401) {
-          return;
-        }
-        localStorage.setItem('userProfile', JSON.stringify(response.data));
-        setUser(data);
-      })
-      .catch(() => {});
+  const fetchAndSetUser = useCallback(async () => {
+    try {
+      await getUserProfile(setUser);
+    } catch (error) {
+      if (error.response.data.message === 'Access token has expired') {
+        await axios.get('auth/refresh-token');
+      }
+      await getUserProfile(setUser);
+    }
   }, []);
   useEffect(() => {
     fetchAndSetUser(false);
