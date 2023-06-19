@@ -5,4 +5,15 @@ const axios = Axios.create({
   withCredentials: true,
 });
 
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    if (error.response?.data?.message === 'Access token has expired') {
+      await axios.get('auth/refresh-token');
+    }
+  }
+);
+
 export default axios;

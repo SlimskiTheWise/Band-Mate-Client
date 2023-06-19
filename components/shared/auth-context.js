@@ -7,9 +7,9 @@ const AuthContext = createContext();
 
 async function getUserProfile(setUser) {
   const response = await axios.get('/auth/profile');
-  if (response.status === 200) {
+  if (response?.status === 200) {
     localStorage.setItem('userProfile', JSON.stringify(response.data));
-    setUser(response.data);
+    setUser(response?.data);
   }
 }
 
@@ -19,7 +19,7 @@ export const AuthContextProvider = ({ children }) => {
     try {
       await getUserProfile(setUser);
     } catch (error) {
-      if (error.response.data.message === 'Access token has expired') {
+      if (error.response?.data?.message === 'Access token has expired') {
         await axios.get('auth/refresh-token');
       }
       await getUserProfile(setUser);
@@ -35,8 +35,9 @@ export const AuthContextProvider = ({ children }) => {
     const loginRes = await axios.post('/auth/login', payload, {
       withCredentials: true,
     });
+    await getUserProfile(setUser);
     if (loginRes.data && loginRes.status === 200) {
-      router.push('/');
+      router.replace('/');
     }
   }
 
