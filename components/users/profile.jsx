@@ -18,7 +18,9 @@ export function Profile({ user }) {
           <li className='flex items-center py-2'>
             <span>Interests:</span>
             <span className='ml-auto'>
-              {user.userInterests[0]} {user.userInterests[1]}
+              {user.userInterests.map((ui) => (
+                <span>{ui} </span>
+              ))}
             </span>
           </li>
           <li className='flex items-center py-2'>
