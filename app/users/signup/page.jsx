@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import Link from 'next/link';
 import axios from '@/utils/api';
 import InputField from '@/components/input';
 import { useRouter } from 'next/navigation';
@@ -137,9 +136,6 @@ function Page() {
           >
             Create Account
           </button>
-        </div>
-        <div className='text-grey-dark mt-6'>
-          <Link href='/login'>Login</Link>
         </div>
       </div>
     </div>
