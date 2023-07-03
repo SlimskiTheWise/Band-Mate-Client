@@ -32,9 +32,7 @@ export const AuthContextProvider = ({ children }) => {
   const router = useRouter();
 
   async function login(payload) {
-    const loginRes = await axios.post('/auth/login', payload, {
-      withCredentials: true,
-    });
+    const loginRes = await axios.post('/auth/login', payload);
     await getUserProfile(setUser);
     if (loginRes.data && loginRes.status === 200) {
       router.replace('/');
