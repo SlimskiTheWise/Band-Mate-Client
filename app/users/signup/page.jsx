@@ -4,6 +4,7 @@ import Link from 'next/link';
 import axios from '@/utils/api';
 import InputField from '@/components/input';
 import { useRouter } from 'next/navigation';
+import { getVerificationCode, verifyEmail } from '../utils/email-verification';
 
 function Page() {
   const router = useRouter();
@@ -24,43 +25,29 @@ function Page() {
     setSignUP((prevSignUp) => ({ ...prevSignUp, [name]: value }));
   };
 
-  async function getVerificationCode() {
+  async function handleSendCode() {
     if (!signUp.email) {
       alert('Please provide an email address.');
       return;
     }
+    const status = await getVerificationCode(signUp.email);
 
-    try {
-      const res = await axios.post('/auth/send-verification-code', {
-        email: signUp.email,
-      });
-
-      if (res.status === 201) {
-        setIsSent(true);
-      }
-    } catch (error) {
-      console.error('Error sending verification code:', error);
+    if (status === 201) {
+      setIsSent(true);
     }
   }
 
-  async function verifyEmail() {
+  async function handleVerifyEmail() {
     if (!signUp.email || !verificationCode) {
       alert('Please provide both email and verification code.');
       return;
     }
 
-    try {
-      const res = await axios.post('/auth/verify', {
-        email: signUp.email,
-        code: verificationCode,
-      });
+    const status = await verifyEmail(signUp.email, verificationCode);
 
-      if (res.status === 201) {
-        setIsSent(false);
-        alert('Email verified!');
-      }
-    } catch (error) {
-      console.error('Error verifying email:', error);
+    if (status === 201) {
+      setIsSent(false);
+      alert('Email verified!');
     }
   }
 
@@ -108,7 +95,7 @@ function Page() {
           <button
             type='button'
             className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 mb-4 rounded'
-            onClick={getVerificationCode}
+            onClick={handleSendCode}
           >
             Send Verification Code
           </button>
@@ -123,7 +110,7 @@ function Page() {
               <button
                 type='button'
                 className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 mb-4 rounded'
-                onClick={verifyEmail}
+                onClick={handleVerifyEmail}
               >
                 Verify Email
               </button>
