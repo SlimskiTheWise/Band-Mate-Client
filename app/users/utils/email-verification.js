@@ -25,7 +25,7 @@ export async function verifyEmail(email, verificationCode) {
       code: verificationCode,
     });
 
-    return res.status;
+    return res?.status;
   } catch (error) {
     console.error('Error verifying email:', error);
   }

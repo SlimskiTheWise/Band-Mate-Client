@@ -8,20 +8,26 @@ import { getVerificationCode, verifyEmail } from '../utils/email-verification';
 function Page() {
   const router = useRouter();
 
-  const [signUp, setSignUP] = useState({
+  const [signUp, setSignUp] = useState({
     name: '',
     username: '',
     email: '',
     password: '',
     password2: '',
     verificationCode: '',
+    profilePictureUrl: null,
   });
   const [isSent, setIsSent] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setSignUP((prevSignUp) => ({ ...prevSignUp, [name]: value }));
+    setSignUp((prevSignUp) => ({ ...prevSignUp, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSignUp((prevSignUp) => ({ ...prevSignUp, profilePictureUrl: file }));
   };
 
   async function handleSendCode() {
@@ -57,8 +63,12 @@ function Page() {
     }
 
     try {
-      const { status } = await axios.post('/users', signUp);
-      if (status === 201) {
+      const res = await axios.post('/users', signUp, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (res?.status === 201) {
         router.push('/');
       }
     } catch (e) {
@@ -128,6 +138,11 @@ function Page() {
             value={password2}
             placeholder='Confirm Password'
             handleChange={handleChange}
+          />
+          <InputField
+            type='file'
+            name='profilePictureUrl'
+            handleChange={handleFileChange}
           />
           <button
             type='submit'
