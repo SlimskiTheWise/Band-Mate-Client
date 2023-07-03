@@ -65,7 +65,7 @@ function Page() {
         </div>
         <div className='text-grey-dark mt-6'>
           <Link
-            href='/forget'
+            href='/users/verify-email'
             className='text-xs text-blue-600 hover:underline mr-2'
           >
             Forget Password?

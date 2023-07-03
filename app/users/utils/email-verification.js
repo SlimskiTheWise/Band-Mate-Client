@@ -1,6 +1,7 @@
 import axios from '@/utils/api';
+import { EmailVerificationType } from './enums/email-verification.enum';
 
-export async function getVerificationCode(email) {
+export async function getVerificationCode(email, type = EmailVerificationType.SIGNUP) {
   if (!email) {
     alert('Please provide an email address.');
     return;
@@ -8,6 +9,7 @@ export async function getVerificationCode(email) {
   try {
     const res = await axios.post('/auth/send-verification-code', {
       email,
+      type,
     });
 
     return res.status;
