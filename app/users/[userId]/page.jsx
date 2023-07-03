@@ -13,8 +13,8 @@ export default function Page({ params }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/users/${params.userId}`);
-        setUser(data);
+        const res = await axios.get(`/users/${params.userId}`);
+        setUser(res?.data);
       } catch (error) {
         console.error(error);
       }
