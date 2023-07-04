@@ -25,14 +25,14 @@ export default function Page({ params }) {
   return (
     <>
       {user && (
-        <div className='container mx-auto my-5 p-5'>
+        <div className='container mx-auto my-5 p-5 mb-9'>
           <div className='md:flex no-wrap md:-mx-2 '>
             <div className='w-full md:w-3/12 md:mx-2'>
-              <div className='bg-white p-3 border-t-4 border-blue-400'>
+              <div className='bg-neutral-50 p-3 border-t-4 border-neutral-70'>
                 <Profile user={user} loggedInUser={loggedInUser} />
               </div>
             </div>
-            <div className='w-full md:w-9/12 mx-2 h-64'>
+            <div className='overflow-scroll md:w-9/12 mx-2'>
               {user.instruments?.map((instrument) => (
                 <Instrument instrument={instrument} key={instrument.id} />
               ))}
