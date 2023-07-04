@@ -5,17 +5,10 @@ export function Instrument({ instrument }) {
         <div className='grid grid-cols-2'>
           <div>
             <div className='flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3'>
-              <span clas='text-green-500'>Title:</span>
-              <span className='tracking-wide'></span>
+              <span clas='text-green-500'>
+                <InstrumentPicture url={instrument.picture} />
+              </span>
             </div>
-            <ul className='list-inside space-y-2'>
-              <li>
-                <div className='text-gray-500 text-xs'>Created At:</div>
-              </li>
-              <li>
-                <div className='text-gray-500 text-xs'>Price:</div>
-              </li>
-            </ul>
           </div>
           <div>
             <div className='flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3'>
@@ -36,5 +29,19 @@ export function Instrument({ instrument }) {
         </div>
       </div>
     </>
+  );
+}
+
+function InstrumentPicture({ url }) {
+  return (
+    <div className='image overflow-hidden'>
+      <img
+        className='h-auto w-full mx-auto'
+        src={`${process.env.NEXT_PUBLIC_S3_URL}${
+          url ?? 'test//blankProfilePicture.webp'
+        }`}
+        alt=''
+      />
+    </div>
   );
 }
