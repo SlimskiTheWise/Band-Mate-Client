@@ -39,6 +39,15 @@ export const Navbar = () => {
                     Logout
                   </button>
                 </li>
+                <li className='mb-4 pl-2 lg:mb-0 lg:pl-0 lg:pr-2 hover:text-neutral-700'>
+                  <Link
+                    href={{
+                      pathname: `/users/${loggedInUser.id}`,
+                    }}
+                  >
+                    Account
+                  </Link>
+                </li>
               </>
             ) : (
               <>
