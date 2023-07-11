@@ -9,7 +9,6 @@ const Page = ({ params }) => {
     const fetchData = async () => {
       try {
         const res = await axios.get(`/instruments/${params.instrumentId}`);
-        console.log(res.data);
         setInstrument(res?.data);
       } catch (error) {
         console.error(error);
