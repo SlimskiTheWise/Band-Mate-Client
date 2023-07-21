@@ -7,10 +7,10 @@ function Button({ content, onClick, active, disabled }) {
   return (
     <button
       className={`flex flex-col cursor-pointer items-center justify-center w-9 h-9 shadow-[0_4px_10px_rgba(0,0,0,0.03)] text-sm font-normal transition-colors rounded-lg
-      ${active ? 'bg-grey-300 text-white' : 'text-grey-300'}
+      ${active ? 'bg-black-500 text-gray-600' : 'text-gray-400'}
       ${
         !disabled
-          ? 'bg-white hover:bg-grey-300 hover:text-white'
+          ? 'bg-white hover:bg-grey-300 hover:text-gray-400'
           : 'text-grey-200 bg-white cursor-not-allowed'
       }
       `}
