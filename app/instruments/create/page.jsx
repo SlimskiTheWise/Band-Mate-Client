@@ -12,7 +12,7 @@ function Page() {
   const [instrument, setInstrument] = useState({
     title: '',
     description: '',
-    price: null,
+    price: 0,
     location: '',
     condition: '',
     type: '',
@@ -45,7 +45,6 @@ function Page() {
     }
   }
 
-  const { title, description, price } = instrument;
 
   return (
     <div className='bg-grey-lighter min-h-screen flex flex-col'>
@@ -53,26 +52,26 @@ function Page() {
         <div className='bg-white px-6 py-8 rounded shadow-md text-black w-full'>
           <InputField
             name='title'
-            value={title}
+            value={instrument.title}
             placeholder='Title'
             handleChange={handleChange}
           />
           <InputField
             name='description'
-            value={description}
+            value={instrument.description}
             placeholder='Description'
             handleChange={handleChange}
           />
           <InputField
             name='price'
-            value={price}
+            value={instrument.price}
             placeholder='Price'
             handleChange={handleChange}
           />
           <select name='location' className='mb-4' onChange={handleChange}>
             <option>Location</option>
             {Object.values(Location).map((location) => (
-              <option key={location} value={location}>
+              <option key={location} value={instrument.location}>
                 {location}
               </option>
             ))}
@@ -80,7 +79,7 @@ function Page() {
           <select name='type' className='mb-4' onChange={handleChange}>
             <option>Type of Instrument</option>
             {Object.values(Type).map((type) => (
-              <option key={type} value={type}>
+              <option key={type} value={instrument.type}>
                 {type}
               </option>
             ))}
@@ -88,7 +87,7 @@ function Page() {
           <select name='condition' className='mb-4' onChange={handleChange}>
             <option>Condition of Instrument</option>
             {Object.values(Condition).map((condition) => (
-              <option key={condition} value={condition}>
+              <option key={condition} value={instrument.condition}>
                 {condition}
               </option>
             ))}
