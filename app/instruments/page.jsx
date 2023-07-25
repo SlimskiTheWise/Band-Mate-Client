@@ -2,24 +2,49 @@
 import axios from '@/utils/api';
 import Link from 'next/link';
 import React, { useEffect, useState, useCallback } from 'react';
+import { SearchOptions } from './enums/search-option.enum';
 
-function SearchBar({}) {
+function SearchBar({ onSearch }) {
+  const [category, setCategory] = useState('All categories');
+  const [searchInput, setSearchInput] = useState('');
+  const [open, setOpen] = React.useState(false);
+
+  const handleCategoryChange = (selectedCategory) => {
+    setCategory(selectedCategory);
+    handleOpen();
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleOpen = () => {
+    setOpen(!open);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const searchQuery = { [category]: searchInput };
+    onSearch(searchQuery);
+  };
+
   return (
-    <form>
-      <div class='flex'>
+    <form onSubmit={handleSubmit}>
+      <div className='flex'>
         <label
-          for='search-dropdown'
+          htmlFor='search-dropdown'
           className='mb-2 text-sm font-medium text-gray-200 sr-only'
         >
-          Your Email
+          Search Category
         </label>
         <button
           id='dropdown-button'
           data-dropdown-toggle='dropdown'
           className='flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-300 dark:bg-neutral-600 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600'
           type='button'
+          onClick={handleOpen}
         >
-          All categories
+          {category}
           <svg
             className='w-2.5 h-2.5 ml-2.5'
             aria-hidden='true'
@@ -29,61 +54,47 @@ function SearchBar({}) {
           >
             <path
               stroke='currentColor'
-              stroke-linecap='round'
-              stroke-linejoin='round'
-              stroke-width='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
               d='m1 1 4 4 4-4'
             />
           </svg>
         </button>
-        <div
-          id='dropdown'
-          className='z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700'
-        >
-          <ul
-            className='py-2 text-sm text-gray-700 dark:text-gray-200'
-            aria-labelledby='dropdown-button'
+        {open ? (
+          <div
+            id='dropdown'
+            className='z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700'
           >
-            <li>
-              <button
-                type='button'
-                className='inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
-              >
-                Mockups
-              </button>
-            </li>
-            <li>
-              <button
-                type='button'
-                className='inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
-              >
-                Templates
-              </button>
-            </li>
-            <li>
-              <button
-                type='button'
-                className='inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
-              >
-                Design
-              </button>
-            </li>
-            <li>
-              <button
-                type='button'
-                className='inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
-              >
-                Logos
-              </button>
-            </li>
-          </ul>
-        </div>
+            <ul
+              className='py-2 text-sm text-gray-700 dark:text-gray-200'
+              aria-labelledby='dropdown-button'
+            >
+              {Object.values(SearchOptions).map((value, index) => (
+                <li key={index}>
+                  <button
+                    type='button'
+                    onClick={() => handleCategoryChange(value)}
+                    className='inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
+                  >
+                    {value}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <></>
+        )}
+
         <div className='relative w-full'>
           <input
             type='search'
             id='search-dropdown'
             className='block p-2.5 w-full z-20 text-sm text-gray-900 dark:bg-neutral-600 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300 focus:dark:bg-neutral-600 focus:dark:bg-neutral-600 dark:bg-gray-700 dark:border-l-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500'
             placeholder='Search...'
+            value={searchInput}
+            onChange={handleSearchInputChange}
             required
           />
           <button
@@ -99,9 +110,9 @@ function SearchBar({}) {
             >
               <path
                 stroke='currentColor'
-                stroke-linecap='round'
-                stroke-linejoin='round'
-                stroke-width='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
                 d='m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z'
               />
             </svg>
@@ -138,11 +149,13 @@ function PaginationNav({
   canNextPage,
   pageCount,
   pageIndex,
+  totalPage,
 }) {
   const renderPageLinks = useCallback(() => {
     if (pageCount === 0) return null;
 
-    const visiblePageButtonCount = 3;
+    const visiblePageButtonCount =
+      totalPage > 0 ? Math.ceil(totalPage / (pageCount + 1)) : 1;
     let numberOfButtons =
       pageCount < visiblePageButtonCount ? pageCount : visiblePageButtonCount;
 
@@ -195,35 +208,40 @@ function PaginationNav({
 }
 
 const Page = () => {
-  const [instruments, setInstruments] = useState([]);
+  const [instruments, setInstruments] = useState({
+    items: [],
+    meta: { page: 0, total: 0, take: 0 },
+  });
   const [pageIndex, setPageIndex] = useState(0);
   const pageCount = 8;
 
+  const fetchData = async (searchOption) => {
+    try {
+      const res = await axios.get('/instruments', {
+        params: {
+          take: pageCount,
+          page: pageIndex + 1,
+          minimumPrice: 0,
+          maximumPrice: 100000000,
+          ...searchOption,
+        },
+        headers: {
+          Accept: '*/*',
+        },
+      });
+      const { items, meta } = res.data;
+      setInstruments({ items, meta });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get('/instruments', {
-          params: {
-            take: pageCount,
-            page: pageIndex + 1,
-            minimumPrice: 0,
-            maximumPrice: 100000000,
-          },
-          headers: {
-            Accept: '*/*',
-          },
-        });
-        setInstruments(res?.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     fetchData();
   }, [pageIndex]);
-
   return (
     <div className='bg-white'>
-            <SearchBar />
+      <SearchBar onSearch={fetchData} />
       <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
         <h2 className='sr-only'>Products</h2>
         <div className='grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8'>
@@ -233,7 +251,7 @@ const Page = () => {
               className='group'
               href={`/instruments/${instrument.id}`}
             >
-              <div className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7'>
+              <div className='aspect-h-1 aspect-w-1 w-48 h-48 overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7'>
                 <img
                   src={`${process.env.NEXT_PUBLIC_S3_URL}${instrument?.picture}`}
                   alt='Tall slender porcelain bottle with natural clay textured body and cork stopper.'
@@ -255,6 +273,7 @@ const Page = () => {
           canNextPage={pageIndex < pageCount - 1}
           pageCount={pageCount}
           pageIndex={pageIndex}
+          totalPage={instruments.meta.total}
         />
       </div>
     </div>

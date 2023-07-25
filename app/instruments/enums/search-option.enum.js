@@ -1,7 +1,7 @@
 export const SearchOptions = {
     TITLE: 'Title',
     USERNAME: 'Username',
-    DESCRIPTION: 'DESCRIPTION',
+    DESCRIPTION: 'Description',
     LOCATION: 'Location',
     TYPE: 'Type',
   };
